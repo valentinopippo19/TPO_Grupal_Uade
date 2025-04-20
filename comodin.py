@@ -9,3 +9,7 @@ notas_temas = [
 ]
 
 profesores = ["Prof. Ramírez", "Prof. Herrera", "Prof. Suárez", "Prof. Medina", "Prof. Blanco"]
+
+alumnos = ["Ana García", "Luis Pérez", "Carlos Méndez"]
+notas = ["9", "7", "10"]
+temas = ["Recursividad", "Listas", "POO"]
