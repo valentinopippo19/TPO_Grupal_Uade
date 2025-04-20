@@ -9,28 +9,29 @@ def imprimir_matriz(m, t="Matriz de datos"):
     for i in range(len(m)):
         print(str(i).ljust(8), m[i][0].ljust(20), str(m[i][1]).ljust(10), m[i][2].ljust(20))
 
-# Función para pedir índice válido
+# Función para pedir índice válido sin try/except
 def pedir_indice(m):
-    try:
-        i = int(input("Ingresa el índice de la persona: "))
+    if not m: return None
+    entrada = input("Ingresa el índice de la persona: ")
+    if entrada.isdigit():
+        i = int(entrada)
         if 0 <= i < len(m):
             return i
         else:
             print("Índice fuera de rango.")
-    except:
+    else:
         print("Índice inválido.")
     return None
 
-# Función para modificar un dato
+# Función para modificar un dato sin try/except
 def modificar_dato(m):
     if not m: return m
     imprimir_matriz(m, "Modificar datos")
     i = pedir_indice(m)
     if i is not None:
         opciones = ["Nombre", "Nota", "Tema"]
-        print("\n¿Qué deseas modificar?")
-        for idx, op in enumerate(opciones, 1):
-            print(f"{idx}. {op}")
+        for j in range(len(opciones)):
+            print(f"{j+1}. {opciones[j]}")
         eleccion = input("Elige una opción (1/2/3): ")
         if eleccion in ["1", "2", "3"]:
             nuevo = input(f"Nuevo {opciones[int(eleccion)-1]}: ")
@@ -42,7 +43,7 @@ def modificar_dato(m):
 # Función para eliminar la matriz
 def eliminar_matriz(m):
     if not m: return m
-    r = input("¿Deseas eliminar la matriz? (si/no): ").lower()
+    r = input("¿Deseas eliminar la matriz? (si/no): ")
     if r == "si":
         imprimir_matriz(m, "Contenido antes de eliminar")
         m.clear()
@@ -51,10 +52,11 @@ def eliminar_matriz(m):
         print("La matriz no fue eliminada.")
     return m
 
-# Menú principal
+# Menú principal sin break
 def menu():
     matriz = []
-    while True:
+    salir = False
+    while not salir:
         print("\n" + "=" * 50)
         print("1. Ingresar nueva persona")
         print("2. Ver matriz")
@@ -64,15 +66,16 @@ def menu():
         opcion = input("Elegí una opción: ")
 
         if opcion == "1":
-            while True:
+            continuar = "si"
+            while continuar == "si":
                 nombre = input("Nombre (o 'salir' para cancelar): ")
-                if nombre.lower() == "salir": break
-                nota = input("Nota: ")
-                tema = input("Tema: ")
-                matriz.append([nombre, nota, tema])
-                seguir = input("¿Ingresar otra persona? (si/no): ").lower()
-                if seguir != "si":
-                    break
+                if nombre == "salir":
+                    continuar = "no"
+                else:
+                    nota = input("Nota: ")
+                    tema = input("Tema: ")
+                    matriz.append([nombre, nota, tema])
+                    continuar = input("¿Ingresar otra persona? (si/no): ")
         elif opcion == "2":
             imprimir_matriz(matriz)
         elif opcion == "3":
@@ -81,7 +84,7 @@ def menu():
             eliminar_matriz(matriz)
         elif opcion == "5":
             print("¡Hasta luego!")
-            break
+            salir = True
         else:
             print("Opción inválida.")
 
