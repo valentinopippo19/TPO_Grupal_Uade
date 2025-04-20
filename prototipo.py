@@ -1,3 +1,15 @@
+import re
+
+# Validaciones con expresiones regulares
+def validar_nombre(nombre):
+    return re.fullmatch(r"[A-Za-zÁÉÍÓÚÑáéíóúñ\s]{2,}", nombre)
+
+def validar_nota(nota):
+    return re.fullmatch(r"(10|[0-9])", nota)
+
+def validar_tema(tema):
+    return re.fullmatch(r"[A-Za-zÁÉÍÓÚÑáéíóúñ0-9\s]{2,}", tema)
+
 # Función para imprimir la matriz
 imprimir_matriz = lambda m, t="Matriz de datos": (
     print(f"\n{t.center(50, '=')}") or
@@ -8,7 +20,6 @@ imprimir_matriz = lambda m, t="Matriz de datos": (
     ))
 )
 
-
 # Función para modificar un dato
 def modificar_dato(m):
     imprimir_matriz(m, "Modificar datos")
@@ -16,9 +27,24 @@ def modificar_dato(m):
     if 0 <= i < len(m):
         print("\n¿Qué deseas modificar?\n1. Nombre\n2. Nota\n3. Tema")
         op = input("Elige una opción (1/2/3): ")
-        nuevo = input("Nuevo valor: ")
-        if op in ["1", "2", "3"]:
-            m[i][int(op)-1] = nuevo
+        if op == "1":
+            nuevo = input("Nuevo nombre: ")
+            if validar_nombre(nuevo):
+                m[i][0] = nuevo
+            else:
+                print("Nombre inválido.")
+        elif op == "2":
+            nuevo = input("Nueva nota (0-10): ")
+            if validar_nota(nuevo):
+                m[i][1] = nuevo
+            else:
+                print("Nota inválida.")
+        elif op == "3":
+            nuevo = input("Nuevo tema: ")
+            if validar_tema(nuevo):
+                m[i][2] = nuevo
+            else:
+                print("Tema inválido.")
         else:
             print("Opción no válida.")
     else:
@@ -36,8 +62,24 @@ def eliminar_matriz(m):
     return m
 
 # === Flujo principal ===
-matriz_datos = [[input("Nombre: "), input("Nota: "), input("Tema: ")] 
-                for _ in iter(lambda: input("\n¿Deseas ingresar una persona? (si/no): ").lower() == "si", False)]
+matriz_datos = []
+while input("\n¿Deseas ingresar una persona? (si/no): ").lower() == "si":
+    nombre = input("Nombre: ")
+    while not validar_nombre(nombre):
+        print("Nombre inválido. Solo letras y espacios.")
+        nombre = input("Nombre: ")
+    
+    nota = input("Nota (0-10): ")
+    while not validar_nota(nota):
+        print("Nota inválida. Debe ser un número entre 0 y 10.")
+        nota = input("Nota (0-10): ")
+    
+    tema = input("Tema: ")
+    while not validar_tema(tema):
+        print("Tema inválido. Solo letras, espacios y números.")
+        tema = input("Tema: ")
+    
+    matriz_datos.append([nombre, nota, tema])
 
 # Mostrar la matriz original
 imprimir_matriz(matriz_datos, "Matriz original")
