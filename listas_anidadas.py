@@ -1,4 +1,16 @@
-# Función lambda para imprimir la matriz
+import re
+
+# === Validaciones con expresiones regulares ===
+def validar_nombre(nombre):
+    return re.fullmatch(r"[A-Za-zÁÉÍÓÚÑáéíóúñ\s]{2,}", nombre)
+
+def validar_nota(nota):
+    return re.fullmatch(r"(10|[0-9])", nota)
+
+def validar_tema(tema):
+    return re.fullmatch(r"[A-Za-zÁÉÍÓÚÑáéíóúñ0-9\s]{2,}", tema)
+
+# === Función lambda para imprimir la matriz ===
 imprimir_matriz = lambda m, t="Matriz de datos": (
     print(f"\n{t.center(50, '=')}") or
     (print("(vacía)") if not m else (
@@ -8,7 +20,7 @@ imprimir_matriz = lambda m, t="Matriz de datos": (
     ))
 )
 
-# Función para modificar un dato (sin try, con validaciones)
+# === Función para modificar un dato (con validaciones) ===
 def modificar_dato(m):
     if not m: return m
     imprimir_matriz(m, "Modificar datos")
@@ -27,18 +39,27 @@ def modificar_dato(m):
 
     if op in ["1", "2", "3"]:
         nuevo_valor = input(f"Nuevo {campos[int(op)-1]}: ")
-        m[i][int(op)-1] = nuevo_valor
+        campo = int(op) - 1
+
+        if campo == 0 and validar_nombre(nuevo_valor):
+            m[i][campo] = nuevo_valor
+        elif campo == 1 and validar_nota(nuevo_valor):
+            m[i][campo] = nuevo_valor
+        elif campo == 2 and validar_tema(nuevo_valor):
+            m[i][campo] = nuevo_valor
+        else:
+            print(f"{campos[campo]} inválido.")
     else:
         print("Opción no válida.")
     return m
 
-# Función para eliminar la matriz
+# === Función lambda para eliminar la matriz ===
 eliminar_matriz = lambda m: (
     (imprimir_matriz(m, "Contenido antes de eliminar") or m.clear() or print("Matriz eliminada."))
     if input("¿Eliminar la matriz? (si/no): ").lower() == "si" else print("Matriz no eliminada.")
 ) or m
 
-# Menú principal sin breaks
+# === Menú principal sin breaks ===
 def menu():
     matriz = []
     salir = False
@@ -57,9 +78,19 @@ def menu():
                 nombre = input("Nombre (o 'salir' para volver): ")
                 if nombre.lower() == "salir":
                     continuar = "no"
+                elif not validar_nombre(nombre):
+                    print("Nombre inválido. Solo letras y espacios (mínimo 2 caracteres).")
                 else:
-                    nota = input("Nota: ")
+                    nota = input("Nota (0-10): ")
+                    while not validar_nota(nota):
+                        print("Nota inválida. Debe ser un número entre 0 y 10.")
+                        nota = input("Nota (0-10): ")
+
                     tema = input("Tema: ")
+                    while not validar_tema(tema):
+                        print("Tema inválido. Solo letras, números y espacios (mínimo 2 caracteres).")
+                        tema = input("Tema: ")
+
                     matriz.append([nombre, nota, tema])
                     continuar = input("¿Agregar otra? (si/no): ").lower()
 
